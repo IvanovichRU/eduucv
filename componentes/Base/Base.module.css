@@ -44,3 +44,34 @@
     overflow: hidden;
     transition: 0.3s;
 }
+
+@keyframes giro180 {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(180deg);
+    }
+}
+
+@keyframes mostrarNav {
+    from { transform: translateY(0%); }
+    to { transform: translateY(100%); }
+}
+
+.giro180 {
+    animation: 0.3s 1 forwards giro180;
+}
+
+.giro0 {
+    animation: 0.3s 1 reverse giro180;
+}
+
+.nav-mostrada {
+    animation: 0.3s 1 forwards mostrarNav;
+}
+
+.nav-oculta {
+    animation: 0.3s 1 reverse mostrarNav;
+}

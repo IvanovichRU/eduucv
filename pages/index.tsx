@@ -1,7 +1,5 @@
 export default function Home() {
   return (
-    <div>
-      <p>Contenido...</p>
-    </div>
+    <h1 className="float-up">¡Bienvenido, Kevin D.!</h1>
   )
 }
