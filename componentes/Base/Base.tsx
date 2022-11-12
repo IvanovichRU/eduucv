@@ -58,7 +58,7 @@ export default class Base extends React.Component<PropiedadesBase, EstadoBase> {
                             </Link>
                         </div>
                     </div>
-                    <div style={{ width: '100%', padding: '0.5em' }} onClick={() => this.setState((antiguoEstado, propiedades) => ({ ocultarNav: !antiguoEstado.ocultarNav }))}>
+                    <div className={ styles['contenedor-seccion'] } onClick={() => this.setState(() => ({ ocultarNav: true }))}>
                         { this.props.children }
                     </div>
                 </div>
