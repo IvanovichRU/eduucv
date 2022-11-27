@@ -32,7 +32,15 @@ export default class Base extends React.Component<PropiedadesBase, EstadoBase> {
 
         return (
             <div>
-                <div className={styles.contenido}>
+                <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+                    <div className={ styles['contenedor-seccion'] } onClick={() => this.setState(() => ({ ocultarNav: true }))}>
+                        { this.props.children }
+                    </div>
+                </div>
+                {/* <div style={{ position: 'absolute', top: '0', right: '0' }}>
+                    <p>POSICIONANDO</p>
+                </div> */}
+                {/* <div className={styles.contenido}>
                     <div style={{ position: 'absolute', width: '100%', display: 'flex', bottom: '0' }}>
                         <div id='barra-nav' className={claseNav}>
                             <div style={{ position: 'absolute', top: '-30px' }} onClick={ this.mostrarMenu }>
@@ -40,29 +48,27 @@ export default class Base extends React.Component<PropiedadesBase, EstadoBase> {
                             </div>
                             <FontAwesomeIcon icon={ faUser } size='4x' />
                             <h2>Kevin D.</h2>
-                            <Link href={'/'} className={ styles['opcion-nav']} onClick={() => this.setState(() => ({ ocultarNav: true }))} >
-                                <FontAwesomeIcon icon={faHouseUser} />
-                                <h3>Inicio</h3>
-                            </Link>
-                            <Link href={'/Dashboard'} className={ styles['opcion-nav']} onClick={() => this.setState(() => ({ ocultarNav: true }))}>
-                                <FontAwesomeIcon icon={faTableColumns} />
-                                <h3>Dashboard</h3>
-                            </Link>
-                            <Link href={'/MisCursos'} className={ styles['opcion-nav']} onClick={() => this.setState(() => ({ ocultarNav: true }))}>
-                                <FontAwesomeIcon icon={faBook} />
-                                <h3>Mis Cursos</h3>
-                            </Link>
-                            <Link href={'/Proyectos'} className={ styles['opcion-nav']} onClick={() => this.setState(() => ({ ocultarNav: true }))}>
-                                <FontAwesomeIcon icon={faCode} />
-                                <h3>Proyectos/Programas</h3>
-                            </Link>
                         </div>
                     </div>
-                    <div className={ styles['contenedor-seccion'] } onClick={() => this.setState(() => ({ ocultarNav: true }))}>
-                        { this.props.children }
-                    </div>
-                </div>
+                </div> */}
             </div>
         )
     }
 }
+
+{/* <Link href={'/'} className={ styles['opcion-nav']} onClick={() => this.setState(() => ({ ocultarNav: true }))} >
+<FontAwesomeIcon icon={faHouseUser} />
+<h3>Inicio</h3>
+</Link>
+<Link href={'/Dashboard'} className={ styles['opcion-nav']} onClick={() => this.setState(() => ({ ocultarNav: true }))}>
+<FontAwesomeIcon icon={faTableColumns} />
+<h3>Dashboard</h3>
+</Link>
+<Link href={'/MisCursos'} className={ styles['opcion-nav']} onClick={() => this.setState(() => ({ ocultarNav: true }))}>
+<FontAwesomeIcon icon={faBook} />
+<h3>Mis Cursos</h3>
+</Link>
+<Link href={'/Proyectos'} className={ styles['opcion-nav']} onClick={() => this.setState(() => ({ ocultarNav: true }))}>
+<FontAwesomeIcon icon={faCode} />
+<h3>Proyectos/Programas</h3>
+</Link> */}
