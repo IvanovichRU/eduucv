@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+generator dbml {
+	provider = "prisma-dbml-generator"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+model Alumno {
+    id       		Int			@id @default(autoincrement())
+    creadoEn 		DateTime 	@default(now())
+	actualizadoEn 	DateTime	@updatedAt
+	nombre			String		@db.VarChar(255)
+	primerApellido	String		@db.VarChar(255)
+	segundoApellido	String		@db.VarChar(255)
+	email			String		@db.VarChar(255)
+	fechaNacimiento	DateTime	@db.Date()
+	semestre		Int			@default(1)
+	activo			Boolean		@default(true)
+}
+
+model Docente {
+    id       		Int			@id @default(autoincrement())
+    creadoEn 		DateTime 	@default(now())
+	actualizadoEn 	DateTime	@updatedAt
+	nombre			String		@db.VarChar(255)
+	primerApellido	String		@db.VarChar(255)
+	segundoApellido	String		@db.VarChar(255)
+	email			String		@db.VarChar(255)
+	fechaNacimiento	DateTime	@db.Date()
+	activo			Boolean		@default(true)
+	cursos			Curso[]
+}
+
+model Curso {
+    id       		Int			@id @default(autoincrement())
+    creadoEn 		DateTime 	@default(now())
+	actualizadoEn 	DateTime	@updatedAt
+	fechaInicio		DateTime
+	fechaFinal		DateTime
+	materia			Materia		@relation(fields: [idMateria], references: [id])
+	idMateria		Int
+	docente			Docente		@relation(fields: [idDocente], references: [id])
+	idDocente		Int
+	horario			Horario		@relation(fields: [idHorario], references: [id])
+	idHorario		Int
+}
+
+model Horario {
+    id       		Int			@id @default(autoincrement())
+    creadoEn 		DateTime 	@default(now())
+	actualizadoEn 	DateTime	@updatedAt
+	cursos			Curso[]
+}
+
+model Asignacion {
+    id       		Int@id 		@default(autoincrement())
+    creadoEn 		DateTime 	@default(now())
+	actualizadoEn 	DateTime	@updatedAt
+	nombre			String		@db.VarChar(255)
+	valor			Decimal		@db.Decimal(4, 2)
+}
+
+model Materia {
+    id       		Int@id 		@default(autoincrement())
+    creadoEn 		DateTime 	@default(now())
+	actualizadoEn 	DateTime	@updatedAt
+	nombre			String		@db.VarChar(255)
+	cursos			Curso[]
+}

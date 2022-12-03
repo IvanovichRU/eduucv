@@ -1,0 +1,46 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table Alumno {
+  id Int [pk, increment]
+  creadoEn DateTime [default: `now()`, not null]
+  actualizadoEn DateTime [not null]
+  nombre String [not null]
+  primerApellido String [not null]
+  segundoApellido String [not null]
+  activo Boolean [not null, default: true]
+}
+
+Table Docente {
+  id Int [pk, increment]
+  creadoEn DateTime [default: `now()`, not null]
+  actualizadoEn DateTime [not null]
+  nombre String [not null]
+  primerApellido String [not null]
+  segundoApellido String [not null]
+  activo Boolean [not null, default: true]
+  cursos Curso [not null]
+}
+
+Table Curso {
+  id Int [pk, increment]
+  creadoEn DateTime [default: `now()`, not null]
+  actualizadoEn DateTime [not null]
+  materia Materia [not null]
+  idMateria Int [not null]
+  docente Docente [not null]
+  idDocente Int [not null]
+}
+
+Table Materia {
+  id Int [pk, increment]
+  creadoEn DateTime [default: `now()`, not null]
+  actualizadoEn DateTime [not null]
+  nombre String [not null]
+  cursos Curso [not null]
+}
+
+Ref: Curso.idMateria > Materia.id
+
+Ref: Curso.idDocente > Docente.id
