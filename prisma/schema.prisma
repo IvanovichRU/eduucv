@@ -24,6 +24,10 @@ model Alumno {
 	email			String		@db.VarChar(255)
 	fechaNacimiento	DateTime	@db.Date()
 	semestre		Int			@default(1)
+	cursos			AlumnosEnCursos[]
+	entrega			EntregaAsignacionAlumno[]
+	usuario			Usuario		@relation(fields: [idUsuario], references: [id])
+	idUsuario		Int
 	activo			Boolean		@default(true)
 }
 
@@ -36,8 +40,24 @@ model Docente {
 	segundoApellido	String		@db.VarChar(255)
 	email			String		@db.VarChar(255)
 	fechaNacimiento	DateTime	@db.Date()
+	usuario			Usuario		@relation(fields: [idUsuario], references: [id])
+	idUsuario		Int
 	activo			Boolean		@default(true)
 	cursos			Curso[]
+}
+
+model Administrativo {
+    id       		Int			@id @default(autoincrement())
+    creadoEn 		DateTime 	@default(now())
+	actualizadoEn 	DateTime	@updatedAt
+	nombre			String		@db.VarChar(255)
+	primerApellido	String		@db.VarChar(255)
+	segundoApellido	String		@db.VarChar(255)
+	email			String		@db.VarChar(255)
+	fechaNacimiento	DateTime	@db.Date()
+	usuario			Usuario		@relation(fields: [idUsuario], references: [id])
+	idUsuario		Int
+	activo			Boolean		@default(true)
 }
 
 model Curso {
@@ -52,6 +72,18 @@ model Curso {
 	idDocente		Int
 	horario			Horario		@relation(fields: [idHorario], references: [id])
 	idHorario		Int
+	asignaciones	Asignacion[]
+	alumnos			AlumnosEnCursos[]
+}
+
+model AlumnosEnCursos {
+	alumno			Alumno		@relation(fields: [idAlumno], references: [id])
+	idAlumno		Int
+	curso			Curso		@relation(fields: [idCurso], references: [id])
+	idCurso			Int
+	calificacion	Decimal		@db.Decimal(4, 2)
+
+	@@id([idAlumno, idCurso])
 }
 
 model Horario {
@@ -67,6 +99,19 @@ model Asignacion {
 	actualizadoEn 	DateTime	@updatedAt
 	nombre			String		@db.VarChar(255)
 	valor			Decimal		@db.Decimal(4, 2)
+	curso			Curso		@relation(fields: [idCurso], references: [id])
+	idCurso			Int
+	entregas		EntregaAsignacionAlumno[]
+}
+
+model EntregaAsignacionAlumno {
+	asignacion		Asignacion	@relation(fields: [idAsignacion], references: [id])
+	idAsignacion	Int
+	alumno			Alumno		@relation(fields: [idAlumno], references: [id])
+	idAlumno		Int
+	fechaDeEntrega	DateTime
+
+	@@id([idAsignacion, idAlumno])
 }
 
 model Materia {
@@ -75,4 +120,16 @@ model Materia {
 	actualizadoEn 	DateTime	@updatedAt
 	nombre			String		@db.VarChar(255)
 	cursos			Curso[]
+}
+
+model Usuario {
+    id       		Int@id 		@default(autoincrement())
+    creadoEn 		DateTime 	@default(now())
+	actualizadoEn 	DateTime	@updatedAt
+	usuario			String		@unique @db.VarChar(20)
+	password		String		@unique @db.VarChar(20)
+	ultimoInicio	DateTime
+	alumnos			Alumno[]
+	docentes		Docente[]
+	administrativos	Administrativo[]
 }
