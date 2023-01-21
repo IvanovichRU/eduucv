@@ -1,46 +1,110 @@
 import { prisma } from "../lib/prisma";
-import CartaMateria from "../componentes/Cartas/CartaMateria";
 import React from "react";
 import { NextPageContext } from "next";
-import { Alumno } from "@prisma/client";
+import { Usuario } from "@prisma/client";
+import { getCookie } from "cookies-next";
+import { PropPersona, TipoPersona } from "../lib/TiposEdUCV";
+import { obtenerPersonaPorIdUsuario } from "../lib/comunesPrisma";
+import ListaCursos from "../componentes/ListaCursos";
+import PantallaPrincipalAdmin from "../componentes/PantallaPrincipalAdmin";
+
 
 interface Props {
-    alumnos: Alumno[];
+    usuario: Usuario;
+    datosPersona: PropPersona;
 }
 
-export async function getServerSideProps({ req }: NextPageContext) {
-    const alumnos = await prisma.alumno.findMany();
-    return { props: { alumnos: alumnos.map((alumno: Alumno) => ({
-        ...alumno,
-        creadoEn: alumno.creadoEn.toISOString(),
-        actualizadoEn: alumno.actualizadoEn.toISOString()
-    }))} };
+export async function getServerSideProps({ req: peticion, res: respuesta }: NextPageContext) {
+    const tokenSesion = getCookie('token-sesion', {
+        req: peticion
+    });
+    let usuario;
+    let personaRelacionada: PropPersona | undefined;
+    if (tokenSesion) {
+        const sesion = await prisma.sesion.findFirst({
+            where: {
+                token: tokenSesion.toString()
+            }
+        });
+        if (sesion) {
+            usuario = await prisma.usuario.findUnique({
+                where: {
+                    id: sesion.idUsuario
+                },
+                include: {
+                    alumnos: true,
+                    docentes: true,
+                    administrativos: true
+                }
+            });
+            if (usuario) {
+                const personaUsuario = await obtenerPersonaPorIdUsuario(usuario.id);
+                if (personaUsuario) {
+                    personaRelacionada = {
+                        id: personaUsuario.id,
+                        tipo: usuario.tipoPersona,
+                        nombre: personaUsuario.nombre,
+                        primerApellido: personaUsuario.primerApellido,
+                        segundoApellido: personaUsuario.segundoApellido,
+                        email: personaUsuario.email,
+                        fechaNacimiento: personaUsuario.fechaNacimiento.toISOString()
+                    }
+                }
+            }
+        } else {
+            return {
+                redirect: {
+                    destination: '/',
+                    permanent: false
+                }
+            }
+        }
+        return {
+            props: {
+                usuario: usuario ? {
+                    usuario: usuario.usuario
+                } : null,
+                datosPersona: personaRelacionada
+            }
+        }
+    } else {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false
+            }
+        }
+    }
 }
 
 export default class Inicio extends React.Component<Props> {
-
     render(): React.ReactNode {
-        return (
-            <div className="float-up" style={{ display: 'flex', flexDirection: 'column', gap: '1em' }}>
-                <h1 style={{ position: 'sticky', top: '0' }} >Inicio</h1>
-                <div>
-                    <h3>Bienvenido a Ed-UCV</h3>
-                    <p style={{ opacity: '0.6' }}>
-                        Abajo se muestran tus pendientes actuales.
-                    </p>
-                </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1em' }}>
-                    <CartaMateria materia="Programación Estructurada" profesor="Isabel" siguienteClase="Hoy, de 8 a 10" />
-                    <CartaMateria materia="Sistemas de Información" profesor="Norma" />
-                    <CartaMateria materia="Estructura de Datos" profesor="Norma" />
-                    <CartaMateria materia="Programación Orientada a Objetos" profesor="Aironou" />
-                </div>
-                <ul>
-                    {
-                        this.props.alumnos.map(alumno => (<li key={alumno.id} >{ alumno.nombre }</li>))
-                    }
-                </ul>
-            </div>
-        );
+        switch (this.props.datosPersona.tipo) {
+            case TipoPersona.Alumno: {
+                return (
+                    <div className="float-up contenedor-principal" >
+                        <div>
+                            <h3>{'Bienvenido, ' + this.props.datosPersona.nombre}</h3>
+                            <p style={{ opacity: '0.6' }}>
+                                Abajo se muestran tus pendientes actuales.
+                            </p>
+                        </div>
+                        <ListaCursos persona={ this.props.datosPersona } />
+                    </div>
+                );
+            }
+            case TipoPersona.Docente: {
+                return (
+                    <div>
+                        <h2>Cursos</h2>
+                    </div>
+                );
+            }
+            case TipoPersona.Administrativo: {
+                return (
+                    <PantallaPrincipalAdmin persona={ this.props.datosPersona } />
+                );
+            }
+        }
     }
 }

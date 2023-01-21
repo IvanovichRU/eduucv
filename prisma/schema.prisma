@@ -1,6 +1,12 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+enum TipoPersona {
+	ALUMNO
+	DOCENTE
+	ADMINISTRATIVO
+}
+
 generator client {
     provider = "prisma-client-js"
 }
@@ -18,15 +24,16 @@ model Alumno {
     id       		Int			@id @default(autoincrement())
     creadoEn 		DateTime 	@default(now())
 	actualizadoEn 	DateTime	@updatedAt
+	
 	nombre			String		@db.VarChar(255)
 	primerApellido	String		@db.VarChar(255)
-	segundoApellido	String		@db.VarChar(255)
+	segundoApellido	String?		@db.VarChar(255)
 	email			String		@db.VarChar(255)
 	fechaNacimiento	DateTime	@db.Date()
 	semestre		Int			@default(1)
 	cursos			AlumnosEnCursos[]
 	entrega			EntregaAsignacionAlumno[]
-	usuario			Usuario		@relation(fields: [idUsuario], references: [id])
+	usuario			Usuario?		@relation(fields: [idUsuario], references: [id])
 	idUsuario		Int
 	activo			Boolean		@default(true)
 }
@@ -37,10 +44,10 @@ model Docente {
 	actualizadoEn 	DateTime	@updatedAt
 	nombre			String		@db.VarChar(255)
 	primerApellido	String		@db.VarChar(255)
-	segundoApellido	String		@db.VarChar(255)
+	segundoApellido	String?		@db.VarChar(255)
 	email			String		@db.VarChar(255)
 	fechaNacimiento	DateTime	@db.Date()
-	usuario			Usuario		@relation(fields: [idUsuario], references: [id])
+	usuario			Usuario?		@relation(fields: [idUsuario], references: [id])
 	idUsuario		Int
 	activo			Boolean		@default(true)
 	cursos			Curso[]
@@ -55,7 +62,7 @@ model Administrativo {
 	segundoApellido	String		@db.VarChar(255)
 	email			String		@db.VarChar(255)
 	fechaNacimiento	DateTime	@db.Date()
-	usuario			Usuario		@relation(fields: [idUsuario], references: [id])
+	usuario			Usuario?		@relation(fields: [idUsuario], references: [id])
 	idUsuario		Int
 	activo			Boolean		@default(true)
 }
@@ -66,20 +73,20 @@ model Curso {
 	actualizadoEn 	DateTime	@updatedAt
 	fechaInicio		DateTime
 	fechaFinal		DateTime
-	materia			Materia		@relation(fields: [idMateria], references: [id])
-	idMateria		Int
-	docente			Docente		@relation(fields: [idDocente], references: [id])
-	idDocente		Int
-	horario			Horario		@relation(fields: [idHorario], references: [id])
-	idHorario		Int
+	materia			Materia?		@relation(fields: [idMateria], references: [id])
+	idMateria		Int?
+	docente			Docente?		@relation(fields: [idDocente], references: [id])
+	idDocente		Int?
+	horario			Horario?		@relation(fields: [idHorario], references: [id])
+	idHorario		Int?
 	asignaciones	Asignacion[]
 	alumnos			AlumnosEnCursos[]
 }
 
 model AlumnosEnCursos {
-	alumno			Alumno		@relation(fields: [idAlumno], references: [id])
+	alumno			Alumno?		@relation(fields: [idAlumno], references: [id])
 	idAlumno		Int
-	curso			Curso		@relation(fields: [idCurso], references: [id])
+	curso			Curso?		@relation(fields: [idCurso], references: [id])
 	idCurso			Int
 	calificacion	Decimal		@db.Decimal(4, 2)
 
@@ -99,15 +106,15 @@ model Asignacion {
 	actualizadoEn 	DateTime	@updatedAt
 	nombre			String		@db.VarChar(255)
 	valor			Decimal		@db.Decimal(4, 2)
-	curso			Curso		@relation(fields: [idCurso], references: [id])
+	curso			Curso?		@relation(fields: [idCurso], references: [id])
 	idCurso			Int
 	entregas		EntregaAsignacionAlumno[]
 }
 
 model EntregaAsignacionAlumno {
-	asignacion		Asignacion	@relation(fields: [idAsignacion], references: [id])
+	asignacion		Asignacion?	@relation(fields: [idAsignacion], references: [id])
 	idAsignacion	Int
-	alumno			Alumno		@relation(fields: [idAlumno], references: [id])
+	alumno			Alumno?		@relation(fields: [idAlumno], references: [id])
 	idAlumno		Int
 	fechaDeEntrega	DateTime
 
@@ -127,9 +134,18 @@ model Usuario {
     creadoEn 		DateTime 	@default(now())
 	actualizadoEn 	DateTime	@updatedAt
 	usuario			String		@unique @db.VarChar(20)
-	password		String		@unique @db.VarChar(20)
-	ultimoInicio	DateTime
+	password		String		@db.VarChar(20)
+	ultimoInicio	DateTime?
 	alumnos			Alumno[]
 	docentes		Docente[]
 	administrativos	Administrativo[]
+	tipoPersona		Int			@default(0)
+	sesiones		Sesion[]
+}
+
+model Sesion {
+	id				Int@id		@default(autoincrement())
+	token			String		@db.VarChar(32)
+	usuario			Usuario		@relation(fields: [idUsuario], references: [id])
+	idUsuario		Int
 }

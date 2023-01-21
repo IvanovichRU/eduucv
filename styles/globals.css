@@ -1,7 +1,9 @@
 :root {
     --bg: #1E1E2C;
     --bg-light: #2D2D44;
+    --bg-light-contrast: #2B2A33;
     --primary: #33E1ED;
+    --error: #BF4342;
     --text: white;
 }
 
@@ -22,6 +24,273 @@ a {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+}
+
+label {
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    transition: 0.3s;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+label.error {
+    color: var(--error);
+}
+
+button {
+    outline: none;
+    border: none;
+    transition: 0.3s;
+}
+
+button.primary {
+    background-color: var(--primary);
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: var(--text);
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1em;
+}
+
+button.primary:hover {
+    background-color: #94f3fa;
+}
+
+button.secondary {
+    background-color: var(--bg-light);
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: var(--text);
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1em;
+}
+
+button.secondary:hover {
+    background-color: #414161;
+}
+
+button.alarm {
+    background-color: var(--error);
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: var(--text);
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1em;
+}
+
+button.alarm:hover {
+    background-color: #d84f4f;
+}
+
+.contenedor-principal {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0rem 1rem;
+}
+
+.contenedor-barra-nav {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding: 8px 16px;
+    position: relative;
+    z-index: 100;
+}
+
+.contenedor-login {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.selector-tabla {
+    display: flex;
+    padding: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    gap: 1rem;
+    background-color: var(--bg-light);
+    border-radius: 16px 16px;
+    overflow-x: scroll;
+    scrollbar-width: none;
+}
+
+.tabla-seleccionada {
+    background-color: var(--primary);
+    border-radius: 8px;
+    padding: 4px 8px;
+    transition: 0.3s;
+    cursor: pointer;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+.tabla-no-seleccionada {
+    border-radius: 8px;
+    padding: 4px 8px;
+    transition: 0.3s;
+    cursor: pointer;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+.modal-formulario {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-around;
+}
+
+.formulario-login {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    gap: 1rem;
+    background-color: var(--bg-light);
+    border-radius: 16px;
+}
+
+.formulario-login .entrada-formulario input {
+    background-color: var(--bg-light-contrast);
+}
+
+form.formulario {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 0.5rem;
+    padding: 8px 1rem;
+}
+
+form .botones-formulario {
+    margin-top: auto;
+    align-self: end;
+    display: flex;
+    gap: 1rem;
+    padding: 8px 2px;
+    flex-wrap: wrap;
+}
+
+input.fecha {
+    font-size: 1.3em !important;
+    background-color: var(--bg-light) !important;
+}
+
+.modal-personalizado-overlay {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+.modal-personalizado-contenido {
+    position: absolute;
+    border: none;
+    background-color: var(--bg);
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 16px;
+    outline: none;
+    max-height: 80%;
+    max-width: 90%;
+}
+
+.ReactModal__Overlay {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.ReactModal__Overlay--after-open{
+    opacity: 1;
+}
+
+.ReactModal__Overlay--before-close{
+    opacity: 0;
+}
+
+.entrada-formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 8em;
+    flex-grow: 1;
+}
+
+.entrada-formulario input {
+    border: none;
+    border-left: solid 2px var(--bg-light-contrast);
+    outline: none;
+    transition: 0.3s;
+    padding: 0.5rem 0.75rem;
+    background-color: var(--bg-light);
+    border-radius: 0px 8px 8px 0px;
+    font-size: 1em;
+}
+
+.entrada-formulario input:focus {
+    border-left: solid 2px var(--primary);
+}
+
+.entrada-formulario input.error:focus {
+    border-left: solid 2px var(--error);
+}
+
+@media only screen and (min-width: 768px) {
+    .contenedor-principal {
+        padding: 2rem;
+    }
+
+    .contenedor-barra-nav {
+        padding: 1rem;
+    }
+
+    form.formulario {
+        gap: 1rem;
+        padding: 2rem;
+    }
+
+    .modal-formulario {
+        padding: 1rem;
+    }
+
+    .entrada-formulario {
+        max-width: 20em;
+    }
+
+    .selector-tabla {
+        justify-content: space-around;
+        font-size: 1.5rem;
+    }
+
+    .tabla-seleccionada {
+        padding: 8px 16px;
+    }
+    
+    .tabla-no-seleccionada {
+        padding: 8px 16px;
+    }
+    
+    .modal-personalizado-contenido {
+        min-width: 50%;
+        max-width: 60%;
+        min-height: 30%;
+        max-height: 70%;
+    }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -47,10 +316,43 @@ a {
         opacity: 0;
         transform: translateY(100%);
     }
+
     to {
         opacity: 1;
         transform: translateY(0%);
     }
+}
+
+@keyframes float-down {
+    from {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0%);
+    }
+}
+
+@keyframes float-down-reverse {
+    from {
+        opacity: 1;
+        transform: translateY(0%);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+}
+
+.float-down {
+    animation: 0.3s 1 forwards float-down;
+}
+
+.float-down-reverse {
+    animation: 0.3s 1 forwards float-down-reverse;
 }
 
 .float-up {

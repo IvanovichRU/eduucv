@@ -8,13 +8,13 @@ Table Alumno {
   actualizadoEn DateTime [not null]
   nombre String [not null]
   primerApellido String [not null]
-  segundoApellido String [not null]
+  segundoApellido String
   email String [not null]
   fechaNacimiento DateTime [not null]
   semestre Int [not null, default: 1]
   cursos AlumnosEnCursos [not null]
   entrega EntregaAsignacionAlumno [not null]
-  usuario Usuario [not null]
+  usuario Usuario
   idUsuario Int [not null]
   activo Boolean [not null, default: true]
 }
@@ -25,10 +25,10 @@ Table Docente {
   actualizadoEn DateTime [not null]
   nombre String [not null]
   primerApellido String [not null]
-  segundoApellido String [not null]
+  segundoApellido String
   email String [not null]
   fechaNacimiento DateTime [not null]
-  usuario Usuario [not null]
+  usuario Usuario
   idUsuario Int [not null]
   activo Boolean [not null, default: true]
   cursos Curso [not null]
@@ -43,7 +43,7 @@ Table Administrativo {
   segundoApellido String [not null]
   email String [not null]
   fechaNacimiento DateTime [not null]
-  usuario Usuario [not null]
+  usuario Usuario
   idUsuario Int [not null]
   activo Boolean [not null, default: true]
 }
@@ -54,20 +54,20 @@ Table Curso {
   actualizadoEn DateTime [not null]
   fechaInicio DateTime [not null]
   fechaFinal DateTime [not null]
-  materia Materia [not null]
-  idMateria Int [not null]
-  docente Docente [not null]
-  idDocente Int [not null]
-  horario Horario [not null]
-  idHorario Int [not null]
+  materia Materia
+  idMateria Int
+  docente Docente
+  idDocente Int
+  horario Horario
+  idHorario Int
   asignaciones Asignacion [not null]
   alumnos AlumnosEnCursos [not null]
 }
 
 Table AlumnosEnCursos {
-  alumno Alumno [not null]
+  alumno Alumno
   idAlumno Int [not null]
-  curso Curso [not null]
+  curso Curso
   idCurso Int [not null]
   calificacion Decimal [not null]
 
@@ -89,15 +89,15 @@ Table Asignacion {
   actualizadoEn DateTime [not null]
   nombre String [not null]
   valor Decimal [not null]
-  curso Curso [not null]
+  curso Curso
   idCurso Int [not null]
   entregas EntregaAsignacionAlumno [not null]
 }
 
 Table EntregaAsignacionAlumno {
-  asignacion Asignacion [not null]
+  asignacion Asignacion
   idAsignacion Int [not null]
-  alumno Alumno [not null]
+  alumno Alumno
   idAlumno Int [not null]
   fechaDeEntrega DateTime [not null]
 
@@ -119,11 +119,26 @@ Table Usuario {
   creadoEn DateTime [default: `now()`, not null]
   actualizadoEn DateTime [not null]
   usuario String [unique, not null]
-  password String [unique, not null]
-  ultimoInicio DateTime [not null]
+  password String [not null]
+  ultimoInicio DateTime
   alumnos Alumno [not null]
   docentes Docente [not null]
   administrativos Administrativo [not null]
+  tipoPersona Int [not null, default: 0]
+  sesiones Sesion [not null]
+}
+
+Table Sesion {
+  id Int [pk, increment]
+  token String [not null]
+  usuario Usuario [not null]
+  idUsuario Int [not null]
+}
+
+Enum TipoPersona {
+  ALUMNO
+  DOCENTE
+  ADMINISTRATIVO
 }
 
 Ref: Alumno.idUsuario > Usuario.id
@@ -147,3 +162,5 @@ Ref: Asignacion.idCurso > Curso.id
 Ref: EntregaAsignacionAlumno.idAsignacion > Asignacion.id
 
 Ref: EntregaAsignacionAlumno.idAlumno > Alumno.id
+
+Ref: Sesion.idUsuario > Usuario.id

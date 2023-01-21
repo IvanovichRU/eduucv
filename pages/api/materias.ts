@@ -1,8 +1,8 @@
 import { getCookie } from "cookies-next";
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 import { obtenerUsuarioPorTokenSesion } from "../../lib/comunesPrisma";
-import { prisma } from "../../lib/prisma";
 import { TipoPersona } from "../../lib/TiposEdUCV";
+import { prisma } from '../../lib/prisma';
 
 export default async function handler(peticion: NextApiRequest, respuesta: NextApiResponse) {
     if (peticion.method !== 'GET') {
@@ -15,28 +15,23 @@ export default async function handler(peticion: NextApiRequest, respuesta: NextA
             res: respuesta
         });
         if (token) {
-            const usuario = await obtenerUsuarioPorTokenSesion(token.toString());
-            if (usuario && usuario.tipoPersona === TipoPersona.Administrativo) {
-                const alumnos = await prisma.alumno.findMany({
-                    include: {
-                        cursos: true,
-                        usuario: true
-                    }
-                });
+            const usuarioSesionPeticion = await obtenerUsuarioPorTokenSesion(token.toString());
+            if (usuarioSesionPeticion && usuarioSesionPeticion.tipoPersona === TipoPersona.Administrativo) {
+                const materias = await prisma.materia.findMany();
                 respuesta.status(200).json({
                     mensaje: 'ok',
                     datos: {
-                        alumnos: alumnos
+                        materias
                     }
                 });
             } else {
                 respuesta.status(200).json({
-                    mensaje: 'No tiene permiso para consultar la lista de alumnos.'
+                    mensaje: 'Su sesión ha expirado o su usuario es inexistente.'
                 });
             }
         } else {
             respuesta.status(200).json({
-                mensaje: 'No ha iniciado sesión.'
+                mensaje: 'Su sesión ha expirado o su usuario es inexistente.'
             });
         }
     }
